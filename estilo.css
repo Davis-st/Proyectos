@@ -1,0 +1,165 @@
+:root {
+    --fondo: #e0e5ec;
+    --texto: #33475b;
+    --suave: #7a8b9a;
+    --brillo: #00d2ff; 
+    
+    --luz: 9px 9px 16px rgb(163, 177, 198, 0.6), -9px -9px 16px rgba(255, 255, 255, 0.5);
+    --sombra: inset 6px 6px 10px 0 rgba(163, 177, 198, 0.7), inset -6px -6px 10px 0 rgba(255, 255, 255, 0.8);
+}
+
+/* Modo oscuro base para neumorfismo */
+body.dark-mode {
+    --fondo: #292d32;
+    --texto: #e0e5ec;
+    --suave: #9ba4b5;
+    --brillo: #00d2ff;
+    
+    --luz: 5px 5px 10px #1d1f23, -5px -5px 10px #353b41;
+    --sombra: inset 5px 5px 10px #1d1f23, inset -5px -5px 10px #353b41;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.3s ease;
+}
+
+body {
+    background-color: var(--fondo);
+    color: var(--texto);
+    padding: 20px;
+    min-height: 100vh;
+}
+
+h1, h2, h3 { color: var(--texto); margin-bottom: 15px; }
+h1 { color: var(--brillo); }
+p { color: var(--suave); line-height: 1.6; margin-bottom: 15px; }
+.chico { font-size: 12px; margin-bottom: 0; }
+
+/* Estructura Dashboard */
+.lienzo {
+    display: flex; gap: 30px; width: 100%; max-width: 1400px;
+    margin: 0 auto; align-items: flex-start;
+}
+
+/* Barra Lateral */
+.costado {
+    width: 260px; height: calc(100vh - 40px); 
+    position: sticky; top: 20px;
+    background-color: var(--fondo); border-radius: 20px;
+    box-shadow: var(--luz); padding: 30px 20px;
+    display: flex; flex-direction: column; justify-content: space-between; 
+}
+.marca { margin-bottom: 40px; text-align: center;}
+.navegacion { flex-grow: 1; }
+.lazos { list-style: none; display: flex; flex-direction: column; gap: 15px; }
+
+/* Contenido Principal */
+.centro { flex: 1; display: flex; flex-direction: column; gap: 30px; }
+
+/* Contenedores */
+.molde {
+    background-color: var(--fondo); border-radius: 20px;
+    box-shadow: var(--luz); padding: 30px; width: 100%;
+}
+.hondo {
+    background-color: var(--fondo); border-radius: 15px;
+    box-shadow: var(--sombra); padding: 20px; text-align: center;
+}
+
+/* Botones e Inputs */
+.toque {
+    display: block; padding: 15px 20px; border-radius: 12px;
+    background-color: var(--fondo); box-shadow: var(--luz);
+    transition: all 0.2s ease-in-out; border: none; cursor: pointer;
+    text-decoration: none; color: var(--texto); font-weight: 600; text-align: left;
+}
+.toque:hover { color: var(--brillo); }
+.toque:active, .toque.activo { box-shadow: var(--sombra); color: var(--brillo); }
+
+.fuerte {
+    display: block; width: 100%; padding: 15px; border-radius: 12px;
+    background-color: var(--fondo); box-shadow: var(--luz); border: none;
+    cursor: pointer; font-size: 16px; font-weight: 600; color: var(--brillo);
+}
+.fuerte:active { box-shadow: var(--sombra); }
+
+.aro {
+    width: 50px; height: 50px; border-radius: 50%;
+    background-color: var(--fondo); box-shadow: var(--luz); border: none;
+    cursor: pointer; font-size: 20px; color: var(--brillo);
+    display: flex; justify-content: center; align-items: center;
+}
+.aro:active { box-shadow: var(--sombra); }
+
+.hueco {
+    width: 100%; padding: 15px; border: none; outline: none;
+    background-color: var(--fondo); border-radius: 10px;
+    box-shadow: var(--sombra); color: var(--texto); font-size: 14px;
+}
+.hueco::placeholder { color: var(--suave); }
+
+/* Tareas y Archivos (Estilo Lista) */
+#lista-tareas li, .item-file {
+    padding: 15px; margin-bottom: 15px; border-radius: 12px;
+    background-color: var(--fondo); box-shadow: var(--luz);
+    display: flex; justify-content: space-between; align-items: center;
+}
+
+/* Login Animado (Adaptado al Neumorfismo) */
+#login-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: var(--fondo); z-index: 9999; display: flex; justify-content: center; align-items: center;
+}
+.container {
+    background-color: var(--fondo); border-radius: 30px; box-shadow: var(--luz);
+    position: relative; overflow: hidden; width: 900px; max-width: 90%; min-height: 550px; display: flex;
+}
+.form-container {
+    position: absolute; top: 0; height: 100%; transition: all 0.6s ease-in-out;
+    left: 0; width: 50%; display: flex; align-items: center; justify-content: center; background: transparent;
+}
+.form-content { width: 100%; padding: 0 40px; text-align: center; }
+.sign-in-container { z-index: 2; opacity: 1; }
+.sign-up-container { opacity: 0; z-index: 1; }
+.container.right-panel-active .sign-in-container { transform: translateX(100%); opacity: 0; z-index: 0; }
+.container.right-panel-active .sign-up-container { transform: translateX(100%); opacity: 1; z-index: 5; animation: show 0.6s; }
+@keyframes show { 0%, 49.99% { opacity: 0; z-index: 1; } 50%, 100% { opacity: 1; z-index: 5; } }
+
+.overlay-container {
+    position: absolute; top: 0; left: 50%; width: 50%; height: 100%;
+    overflow: hidden; transition: transform 0.6s ease-in-out; z-index: 100;
+}
+.container.right-panel-active .overlay-container { transform: translateX(-100%); }
+.overlay {
+    background: var(--brillo); color: white; position: relative; left: -100%; height: 100%; width: 200%;
+    transform: translateX(0); transition: transform 0.6s ease-in-out; display: flex;
+}
+.container.right-panel-active .overlay { transform: translateX(50%); }
+.overlay-panel {
+    position: absolute; display: flex; align-items: center; justify-content: center;
+    flex-direction: column; padding: 0 40px; text-align: center; top: 0; height: 100%; width: 50%;
+    transform: translateX(0); transition: transform 0.6s ease-in-out;
+}
+.overlay-left { transform: translateX(-20%); }
+.container.right-panel-active .overlay-left { transform: translateX(0); }
+.overlay-right { right: 0; transform: translateX(0); }
+.container.right-panel-active .overlay-right { transform: translateX(20%); }
+
+/* Responsivo Básico */
+@media (max-width: 768px) {
+    .lienzo { flex-direction: column; }
+    .costado { width: 100%; height: auto; position: relative; top: 0; flex-direction: row; flex-wrap: wrap; }
+    .lazos { flex-direction: row; flex-wrap: wrap; justify-content: center; }
+    
+    .overlay-container { display: none; }
+    .container { width: 100%; min-height: 100vh; border-radius: 0; box-shadow: none;}
+    .form-container { width: 100%; }
+    .sign-in-container { display: flex; }
+    .sign-up-container { display: none; }
+    .container.right-panel-active .sign-in-container { display: none; }
+    .container.right-panel-active .sign-up-container { display: flex; opacity: 1; animation: fadeIn 0.5s; }
+}
