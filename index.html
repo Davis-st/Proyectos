@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#e0e5ec">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Dashboard Davis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="estilo.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+<!-- LOGIN SYSTEM (ANIMADO & DESLIZANTE) -->
+<div id="login-overlay">
+    <div class="container" id="container">
+        
+        <!-- 1. FORMULARIO DE REGISTRO (Oculto a la derecha) -->
+        <div class="form-container sign-up-container">
+            <div class="form-content">
+                <h1>Crear Cuenta</h1>
+                <p class="chico" style="margin-bottom: 15px;">Requiere PIN Maestro</p>
+                
+                <div class="input-group">
+                    <input type="password" id="reg-pin" placeholder="PIN Maestro" class="hueco">
+                </div>
+                <div class="input-group">
+                    <input type="text" id="reg-user" placeholder="Usuario Nuevo" class="hueco">
+                </div>
+                <div class="input-group">
+                    <input type="password" id="reg-pass" placeholder="Contraseña" class="hueco">
+                </div>
+                
+                <button onclick="registrarUsuario()" class="fuerte">REGISTRARSE</button>
+                <p id="msg-reg" class="error-text" style="display:none; margin-top:10px; font-size:12px; color: #ff6b6b;"></p>
+
+                <!-- Enlace Móvil -->
+                <p class="mobile-text" style="margin-top: 20px;">
+                    ¿Ya tienes cuenta? <span onclick="cambiarPanel()" style="color: var(--brillo); cursor: pointer; font-weight: bold;">Inicia Sesión</span>
+                </p>
+            </div>
+        </div>
+
+        <!-- 2. FORMULARIO DE LOGIN (Visible a la izquierda) -->
+        <div class="form-container sign-in-container">
+            <div class="form-content">
+                <h1>Iniciar Sesión</h1>
+                <p style="margin-bottom: 20px;">Ingresa tus credenciales</p>
+                
+                <div class="input-group">
+                    <input type="text" id="log-user" placeholder="Usuario" class="hueco">
+                </div>
+                <div class="input-group">
+                    <input type="password" id="log-pass" placeholder="Contraseña" class="hueco">
+                </div>
+                
+                <button onclick="iniciarSesion()" class="fuerte">ENTRAR</button>
+                <p id="msg-login" class="error-text" style="display:none; margin-top:10px; font-size:12px; color: #ff6b6b;"></p>
+
+                <!-- Enlace Móvil -->
+                <p class="mobile-text" style="margin-top: 20px;">
+                    ¿No tienes cuenta? <span onclick="cambiarPanel()" style="color: var(--brillo); cursor: pointer; font-weight: bold;">Regístrate</span>
+                </p>
+            </div>
+        </div>
+
+        <!-- 3. PANEL BURBUJA -->
+        <div class="overlay-container">
+            <div class="overlay">
+                <div class="overlay-panel overlay-left">
+                    <h1 style="color: white;">¡Bienvenido!</h1>
+                    <p style="color: white;">Para mantenerte conectado, inicia sesión con tu cuenta.</p>
+                    <button class="ghost" id="signIn" style="background: transparent; border: 2px solid white; color: white; padding: 12px 45px; border-radius: 50px; font-weight: bold; cursor: pointer; margin-top: 20px;">INICIAR SESIÓN</button>
+                </div>
+                <div class="overlay-panel overlay-right">
+                    <h1 style="color: white;">¡Hola, Ingeniero!</h1>
+                    <p style="color: white;">Introduce tus datos para comenzar.</p>
+                    <p style="margin-top: 20px; font-weight: bold; color: white;">¿No tienes cuenta?</p>
+                    <button class="ghost" id="signUp" style="background: transparent; border: 2px solid white; color: white; padding: 12px 45px; border-radius: 50px; font-weight: bold; cursor: pointer;">REGÍSTRATE</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="lienzo">
+    <!-- MENÚ LATERAL -->
+    <div class="costado" id="sidebar">
+        <div>
+            <div class="marca">
+                <h2>DAVIS</h2>
+            </div>
+            
+            <ul class="lazos navegacion">
+                <li><button class="toque activo" onclick="mostrarMateria('Inicio', this)"><i class='bx bx-grid-alt' style="margin-right: 10px;"></i> Inicio</button></li>
+                <li><button class="toque" onclick="mostrarMateria('Universidad', this)"><i class='bx bxs-graduation' style="margin-right: 10px;"></i> Universidad</button></li>
+                <li><button class="toque" onclick="mostrarMateria('Documentos', this)"><i class='bx bx-folder' style="margin-right: 10px;"></i> Documentos</button></li>
+                <li><button class="toque" onclick="mostrarMateria('Herramientas', this)"><i class='bx bx-wrench' style="margin-right: 10px;"></i> Herramientas</button></li>
+                <li><button class="toque" onclick="mostrarMateria('Apps', this)"><i class='bx bxl-spotify' style="margin-right: 10px;"></i> Apps</button></li>
+                <li><button class="toque" onclick="mostrarMateria('Ajustes', this)"><i class='bx bx-cog' style="margin-right: 10px;"></i> Ajustes</button></li>
+            </ul>
+        </div>
+        
+        <!-- PERFIL (EDITABLE) -->
+        <div style="margin-top: 20px; display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; align-items: center;">
+                <div style="position: relative; cursor: pointer; margin-right: 15px;" onclick="document.getElementById('input-avatar').click()">
+                    <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" id="img-avatar" alt="Perfil" 
+                         style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover; box-shadow: var(--luz);">
+                    <input type="file" id="input-avatar" accept="image/*" style="display: none;" onchange="subirFotoPerfil()">
+                </div>
+                <div>
+                    <p id="nombre-sidebar" style="margin:0; font-weight: 600; color: var(--texto);">Invitado</p>
+                    <p class="chico" style="margin:0;">Ingeniero</p>
+                </div>
+            </div>
+            <button onclick="cerrarSesion()" class="aro" style="width: 40px; height: 40px; font-size: 18px; color: #ff6b6b;"><i class='bx bx-log-out'></i></button>
+        </div>
+    </div>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <div class="centro">
+        
+        <header class="molde" style="display: flex; justify-content: space-between; align-items: center; padding: 20px 30px;">
+            <h2 id="saludo-texto" style="margin:0;">Bienvenido</h2>
+            <h3 id="nombre-header" style="margin:0; color: var(--suave);">Invitado</h3>
+        </header>
+        
+        <!-- 1. INICIO -->
+        <div id="Inicio" class="content-section show">
+            <div class="molde" style="text-align: center; margin-bottom: 30px;">
+                <h1 id="reloj-digital" style="font-size: 4rem;">00:00:00</h1>
+                <p>Ingeniería en Ciencias de la Computación</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px;">
+                <div class="molde" style="display: flex; align-items: center; justify-content: space-between;">
+                    <div><h3>San Salvador 🇸🇻</h3><h1 id="temp-actual" style="font-size: 2.5rem; margin: 0; color: var(--texto);">--°C</h1><p id="clima-desc" style="margin: 0;">Cargando...</p></div>
+                    <div style="font-size: 45px;">🌤️</div>
+                </div>
+                <div class="molde" style="display: flex; align-items: center; gap: 20px;">
+                    <div class="aro"><i class='bx bx-bitcoin' style="color: #f7931a;"></i></div>
+                    <div><h3 style="margin:0;">Bitcoin</h3><h2 id="btc-price" style="margin:0; color: var(--texto);">...</h2></div>
+                </div>
+                <div class="molde">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                        <div class="aro" style="width: 40px; height: 40px;"><i class='bx bx-wifi'></i></div>
+                        <h3 style="margin:0;">Red</h3>
+                    </div>
+                    <div id="network-info">
+                        <p style="margin:5px 0;">IP: <span id="my-ip" style="font-weight: 600;">...</span></p>
+                        <p style="margin:0;">ISP: <span id="my-isp">...</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; margin-top: 30px;">
+                
+                <div class="molde">
+                    <h3>✅ Mis Pendientes</h3>
+                    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                        <input type="text" id="input-tarea" placeholder="Nueva tarea..." class="hueco">
+                        <button onclick="agregarTarea()" class="aro" style="margin-top: 8px;">+</button>
+                    </div>
+                    <ul id="lista-tareas" style="list-style: none;"></ul>
+                </div>
+
+                <div class="molde">
+                    <div style="display: flex; justify-content: space-between; align-items: center;"><h3>📝 Notas</h3><span id="estado-notas" class="chico" style="color: #00b894; opacity: 0; transition: 0.5s;">Guardado ✅</span></div>
+                    <textarea id="mi-bloc-notas" class="hondo" placeholder="Escribe aquí tus ideas..." style="width: 100%; height: 150px; resize: none; border: none; outline: none; margin-top: 15px; color: var(--texto);"></textarea>
+                </div>
+
+                <div class="molde">
+                    <h3>🧮 Calculadora</h3>
+                    <input type="text" id="calc-screen" class="hondo" readonly placeholder="0" style="width: 100%; font-size: 1.5rem; text-align: right; border: none; outline: none; color: var(--texto); margin-bottom: 15px;">
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px;">
+                        <button onclick="limpiarCalc()" class="toque" style="color: #ff6b6b;">C</button><button onclick="appendCalc('/')" class="toque" style="color: var(--brillo);">÷</button><button onclick="appendCalc('*')" class="toque" style="color: var(--brillo);">×</button><button onclick="borrarUno()" class="toque" style="color: var(--brillo);">⌫</button>
+                        <button onclick="appendCalc('7')" class="toque">7</button><button onclick="appendCalc('8')" class="toque">8</button><button onclick="appendCalc('9')" class="toque">9</button><button onclick="appendCalc('-')" class="toque" style="color: var(--brillo);">-</button>
+                        <button onclick="appendCalc('4')" class="toque">4</button><button onclick="appendCalc('5')" class="toque">5</button><button onclick="appendCalc('6')" class="toque">6</button><button onclick="appendCalc('+')" class="toque" style="color: var(--brillo);">+</button>
+                        <button onclick="appendCalc('1')" class="toque">1</button><button onclick="appendCalc('2')" class="toque">2</button><button onclick="appendCalc('3')" class="toque">3</button><button onclick="calcularResult()" class="toque" style="grid-row: span 2; background-color: var(--brillo); color: white;">=</button>
+                        <button onclick="appendCalc('0')" class="toque" style="grid-column: span 2;">0</button><button onclick="appendCalc('.')" class="toque">.</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. UNIVERSIDAD -->
+        <div id="Universidad" class="content-section" style="display: none;">
+            <div class="molde" style="margin-bottom: 30px;">
+                <h2>Universidad</h2>
+                <p>Accesos rápidos UDB</p>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px;">
+                <div class="molde">
+                    <h3 style="text-align: center;">🎓 ¿Paso la materia?</h3>
+                    <div style="display: flex; gap: 15px; margin: 20px 0;">
+                        <input type="number" id="nota1" placeholder="Nota 1" class="hueco" style="text-align:center;">
+                        <input type="number" id="nota2" placeholder="Nota 2" class="hueco" style="text-align:center;">
+                    </div>
+                    <button onclick="calcularPromedio()" class="fuerte">Calcular</button>
+                    <div id="resultado-notas" style="margin-top: 15px; font-weight: bold; text-align: center; font-size: 1.2rem;"></div>
+                </div>
+
+                <div class="molde" style="display: flex; align-items: center; justify-content: space-between;">
+                    <div>
+                        <h3>Portal Web</h3>
+                        <p class="chico">Ver notas y pagos.</p>
+                    </div>
+                    <a href="https://admacad.udb.edu.sv/PortalWeb/" target="_blank" class="aro"><i class='bx bx-link-external'></i></a>
+                </div>
+
+                <div class="molde" style="display: flex; align-items: center; justify-content: space-between;">
+                    <div>
+                        <h3>Aula Virtual</h3>
+                        <p class="chico">Entregar tareas.</p>
+                    </div>
+                    <a href="https://www.udbvirtual.edu.sv/auladigital/login/index.php" target="_blank" class="aro"><i class='bx bx-link-external'></i></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. DOCUMENTOS EN LA NUBE (Google Drive) -->
+        <div id="Documentos" class="content-section" style="display: none;">
+            <div class="molde" style="margin-bottom: 30px;">
+                <h2>📁 Documentos en la Nube</h2>
+                <p>Almacenamiento en Google Drive</p>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr; gap: 30px;">
+                <div class="molde">
+                    <h3>Subir Archivo</h3>
+                    <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px;">
+                        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                            <div style="flex: 1; min-width: 200px;">
+                                <select id="folder-select" onchange="verificarCarpeta()" class="hueco" style="cursor:pointer;">
+                                    <option value="General">📂 General</option>
+                                    <option value="nueva" style="font-weight:bold; color:var(--brillo);">+ Crear Nueva Carpeta...</option>
+                                </select>
+                                <input type="text" id="new-folder-input" placeholder="Nombre nueva carpeta" class="hueco" style="display:none; margin-top: 10px;">
+                            </div>
+                            <input type="text" id="document-name" placeholder="Nombre del archivo" class="hueco" style="flex:1; min-width: 200px;">
+                        </div>
+                        <input type="file" id="document-file" class="hondo" style="width: 100%; border: none;">
+                        <button id="upload-btn" onclick="uploadDocument()" class="fuerte">Subir a Drive ☁️</button>
+                        <p id="upload-status" style="text-align: center;"></p>
+                    </div>
+                </div>
+
+                <div class="molde">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 20px;">
+                        <h3>Mis Archivos</h3>
+                        <input type="text" id="search-docs" onkeyup="filtrarArchivos()" placeholder="Buscar documento..." class="hondo" style="width: 250px; border: none; outline: none;">
+                    </div>
+                    <ul id="documents-list" style="list-style: none; padding: 0;">
+                        <li style="text-align: center; color: var(--suave);">Cargando...</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. HERRAMIENTAS -->
+        <div id="Herramientas" class="content-section" style="display: none;">
+            <div class="molde" style="margin-bottom: 30px;">
+                <h2>Herramientas</h2>
+                <p>Utilidades y asistentes IA</p>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px;">
+                <div class="molde" style="display: flex; align-items: center; justify-content: space-between;">
+                    <div><h3>Gemini</h3><p class="chico">Asistente de IA de Google</p></div>
+                    <a href="https://gemini.google.com/app?hl=es" target="_blank" class="aro"><i class='bx bx-bot'></i></a>
+                </div>
+                <div class="molde" style="display: flex; align-items: center; justify-content: space-between;">
+                    <div><h3>ChatGPT</h3><p class="chico">Asistente de IA de OpenAI</p></div>
+                    <a href="https://chatgpt.com/" target="_blank" class="aro"><i class='bx bx-message-dots'></i></a>
+                </div>
+                <div class="molde" style="display: flex; align-items: center; justify-content: space-between;">
+                    <div><h3>GeoGebra</h3><p class="chico">Matemáticas dinámicas</p></div>
+                    <a href="https://www.geogebra.org/classic?lang=es" target="_blank" class="aro"><i class='bx bx-math'></i></a>
+                </div>
+                <div class="molde" style="display: flex; align-items: center; justify-content: space-between;">
+                    <div><h3>Google Drive</h3><p class="chico">Almacenamiento web</p></div>
+                    <a href="https://drive.google.com/drive/u/0/quota" target="_blank" class="aro"><i class='bx bxl-google-drive'></i></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. APPS -->
+        <div id="Apps" class="content-section" style="display: none;">
+            <div class="molde" style="margin-bottom: 30px;">
+                <h2>Apps</h2>
+                <p>Entretenimiento</p>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px;">
+                <div class="molde" style="display: flex; align-items: center; justify-content: space-between;">
+                    <div><h3>YouTube</h3></div>
+                    <a href="https://www.youtube.com/" target="_blank" class="aro" style="color: #ff0000;"><i class='bx bxl-youtube'></i></a>
+                </div>
+                <div class="molde" style="display: flex; align-items: center; justify-content: space-between;">
+                    <div><h3>YouTube Music</h3></div>
+                    <a href="https://music.youtube.com/" target="_blank" class="aro" style="color: #ff0000;"><i class='bx bxs-music'></i></a>
+                </div>
+                <div class="molde" style="display: flex; align-items: center; justify-content: space-between;">
+                    <div><h3>Facebook</h3></div>
+                    <a href="https://www.facebook.com/" target="_blank" class="aro" style="color: #1877f2;"><i class='bx bxl-facebook-circle'></i></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. AJUSTES -->
+        <div id="Ajustes" class="content-section" style="display: none;">
+            <div class="molde" style="margin-bottom: 30px;">
+                <h2>⚙️ Configuración</h2>
+                <p>Personaliza tu experiencia</p>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+                <div class="molde" onclick="toggleTheme()" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h3>Tema</h3>
+                        <p class="chico">Cambiar entre claro y oscuro</p>
+                    </div>
+                    <div class="aro"><i class='bx bx-moon'></i></div>
+                </div>
+                <div class="molde">
+                    <h3>👤 Perfil</h3>
+                    <p id="nombre-ajustes" style="font-weight:bold; font-size: 1.2rem; color: var(--brillo);">Invitado</p>
+                    <p class="chico">Ingeniería en Ciencias de la Computación</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
