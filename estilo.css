@@ -1,203 +1,238 @@
 /* =========================================
-   1. VARIABLES (NEUMORFISMO + CRISTAL AMIGABLE)
+   1. VARIABLES (GLASS-NEUMORPHISM PRO)
    ========================================= */
 :root {
-    /* Fondo con un toque más azulado/cálido (Cero estilo hospital) */
-    --color-fondo: #e8eff5;
-    /* Fondo de los elementos con transparencia para el cristal */
-    --fondo-cristal: rgba(232, 239, 245, 0.65); 
+    /* Fondos con degradados muy suaves, cero colores sólidos o "hospital" */
+    --fondo-base: linear-gradient(135deg, #e8f0f8 0%, #dbe5ee 100%);
     
+    /* Cristal esmerilado con tintes de color para las tarjetas */
+    --cristal-card: linear-gradient(135deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.1) 100%);
+    --cristal-input: rgba(235, 242, 248, 0.5);
+    
+    /* Degradados para botones y acentos (Inspirado en tus imágenes) */
+    --gradiente-acento: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%);
+    --gradiente-hover: linear-gradient(135deg, #b2abff 0%, #7d6dfa 100%);
+    
+    /* Textos */
     --texto: #475569;
     --suave: #8492a6;
-    --brillo: #00c6ff; /* Un cyan/celeste muy amigable y moderno */
+    --brillo: #6c5ce7; 
     
-    /* Sombras 3D más suaves para que se noten bien los bordes redondos */
-    --luz: 8px 8px 16px rgba(190, 205, 220, 0.6), -8px -8px 16px rgba(255, 255, 255, 0.9);
-    --sombra: inset 6px 6px 12px rgba(190, 205, 220, 0.6), inset -6px -6px 12px rgba(255, 255, 255, 0.9);
+    /* NEUMORFISMO (Luces y Sombras 3D) */
+    /* Sombra exterior (Efecto elevado/Botones/Tarjetas) */
+    --luz-fuera: 
+        8px 8px 16px rgba(180, 195, 210, 0.6), 
+        -8px -8px 16px rgba(255, 255, 255, 0.9);
     
-    /* Borde súper sutil para enmarcar el cristal */
-    --borde-cristal: 1px solid rgba(255, 255, 255, 0.6);
+    /* Sombra interior (Efecto hundido/Inputs) */
+    --luz-dentro: 
+        inset 6px 6px 12px rgba(180, 195, 210, 0.6), 
+        inset -6px -6px 12px rgba(255, 255, 255, 0.9);
+        
+    /* Borde de cristal tallado */
+    --borde-vidrio: 1px solid rgba(255, 255, 255, 0.6);
+    --borde-input: 1px solid rgba(255, 255, 255, 0.4);
 }
 
 body.dark-mode {
-    --color-fondo: #1e222a;
-    --fondo-cristal: rgba(30, 34, 42, 0.65);
+    /* Fondo oscuro azulado/morado muy profundo (referencia oscura) */
+    --fondo-base: linear-gradient(135deg, #1b1e24 0%, #15171a 100%);
     
-    --texto: #f1f5f9;
+    /* Cristal tintado en oscuro */
+    --cristal-card: linear-gradient(135deg, rgba(40, 45, 55, 0.4) 0%, rgba(20, 22, 25, 0.2) 100%);
+    --cristal-input: rgba(15, 17, 20, 0.5);
+    
+    /* Degradado acento Neon Cyan (estilo hacker/pro) */
+    --gradiente-acento: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%);
+    --gradiente-hover: linear-gradient(135deg, #33dfff 0%, #528ee0 100%);
+    
+    /* Textos */
+    --texto: #e2e8f0;
     --suave: #94a3b8;
     --brillo: #00d2ff;
     
-    --luz: 8px 8px 16px rgba(0, 0, 0, 0.3), -8px -8px 16px rgba(45, 50, 60, 0.4);
-    --sombra: inset 6px 6px 12px rgba(0, 0, 0, 0.5), inset -6px -6px 12px rgba(45, 50, 60, 0.3);
-    
-    --borde-cristal: 1px solid rgba(255, 255, 255, 0.05);
+    /* NEUMORFISMO OSCURO */
+    --luz-fuera: 
+        8px 8px 16px rgba(10, 11, 14, 0.8), 
+        -8px -8px 16px rgba(45, 50, 60, 0.4);
+        
+    --luz-dentro: 
+        inset 6px 6px 12px rgba(10, 11, 14, 0.8), 
+        inset -6px -6px 12px rgba(45, 50, 60, 0.4);
+        
+    --borde-vidrio: 1px solid rgba(255, 255, 255, 0.08);
+    --borde-input: 1px solid rgba(255, 255, 255, 0.03);
 }
 
 /* =========================================
-   2. GENERAL & TEXTURA DE FONDO
+   2. GENERAL & TEXTURA LÍQUIDA
    ========================================= */
 * {
     margin: 0; padding: 0; box-sizing: border-box;
-    font-family: 'Poppins', sans-serif; transition: all 0.3s ease;
+    font-family: 'Poppins', sans-serif; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 body {
-    background-color: var(--color-fondo);
-    /* TEXTURA: Le da unos destellos de color al fondo para que el cristal se note */
-    background-image: 
-        radial-gradient(at 0% 0%, rgba(0, 198, 255, 0.1) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(108, 92, 231, 0.08) 0px, transparent 50%);
-    background-attachment: fixed;
+    background: var(--fondo-base);
     color: var(--texto);
     padding: 20px;
     min-height: 100vh;
+    overflow-x: hidden;
 }
 
-h1, h2, h3 { color: var(--texto); margin-bottom: 15px; }
-h1 { text-align: center; color: var(--brillo); }
+/* Bolas de luz difuminadas de fondo para dar el efecto de Cristal Líquido */
+body::before, body::after {
+    content: ''; position: fixed; border-radius: 50%; z-index: -1; filter: blur(80px); opacity: 0.5;
+}
+body::before {
+    width: 400px; height: 400px; top: -100px; left: -100px; background: var(--brillo);
+}
+body::after {
+    width: 300px; height: 300px; bottom: -50px; right: -50px; background: var(--texto); opacity: 0.1;
+}
+
+h1, h2, h3 { color: var(--texto); margin-bottom: 15px; font-weight: 800; }
+h1 { text-align: center; background: var(--gradiente-acento); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 p { color: var(--suave); line-height: 1.6; margin-bottom: 15px; }
 .chico { font-size: 12px; margin-bottom: 0; }
 
-
 /* =========================================
-   3. ESTRUCTURA DASHBOARD
+   3. ESTRUCTURA (GLASS-NEUMORPHISM)
    ========================================= */
-.lienzo {
-    display: flex; gap: 30px; width: 100%; max-width: 1400px;
-    margin: 0 auto; align-items: flex-start;
-}
+.lienzo { display: flex; gap: 30px; width: 100%; max-width: 1400px; margin: 0 auto; align-items: flex-start; }
 
-/* Barra Lateral */
+/* Menú Lateral */
 .costado {
-    width: 280px; height: calc(100vh - 40px); 
-    position: sticky; top: 20px;
-    background-color: var(--fondo-cristal); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-    border-radius: 30px; border: var(--borde-cristal); box-shadow: var(--luz);
+    width: 280px; height: calc(100vh - 40px); position: sticky; top: 20px;
+    background: var(--cristal-card); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border: var(--borde-vidrio); border-radius: 30px; box-shadow: var(--luz-fuera);
     padding: 30px 20px; display: flex; flex-direction: column; justify-content: space-between; 
 }
 .marca { margin-bottom: 40px; text-align: center;}
 .navegacion { flex-grow: 1; }
+.lazos { list-style: none; display: flex; flex-direction: column; gap: 15px; padding: 0; }
 
-/* Contenedor de Botones del Menú (Alineados perfectos) */
-.lazos { list-style: none; display: flex; flex-direction: column; gap: 12px; padding: 0; }
-
-/* Contenido Principal */
 .centro { flex: 1; display: flex; flex-direction: column; gap: 30px; }
 
-/* Tarjetas Principales (Efecto Salido) */
+/* Tarjetas Principales (Extruidas) */
 .molde {
-    background-color: var(--fondo-cristal); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-    border: var(--borde-cristal); border-radius: 30px; box-shadow: var(--luz);
+    background: var(--cristal-card); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border: var(--borde-vidrio); border-radius: 30px; box-shadow: var(--luz-fuera);
     padding: 30px; width: 100%;
 }
 
-/* Elementos Hundidos (Inputs, Áreas de texto) */
+/* Elementos Hundidos (Zonas de contenido) */
 .hondo {
-    background-color: var(--fondo-cristal); backdrop-filter: blur(10px);
-    border: var(--borde-cristal); border-radius: 20px; box-shadow: var(--sombra);
+    background: var(--cristal-input); backdrop-filter: blur(10px);
+    border: var(--borde-input); border-radius: 20px; box-shadow: var(--luz-dentro);
     padding: 20px; text-align: center;
 }
 
-
 /* =========================================
-   4. BOTONES E INPUTS (FORMA PÍLDORA)
+   4. BOTONES E INPUTS (ESTILO PÍLDORA PRO)
    ========================================= */
 /* Botón del Menú (.toque) */
 .toque {
     display: flex; align-items: center; width: 100%;
-    padding: 14px 25px; border-radius: 30px; /* Bordes bien redondos tipo píldora */
-    background-color: var(--fondo-cristal); backdrop-filter: blur(10px);
-    border: var(--borde-cristal); box-shadow: var(--luz);
-    transition: all 0.3s ease-in-out; cursor: pointer; text-decoration: none;
-    color: var(--texto); font-weight: 600; font-size: 15px;
+    padding: 15px 25px; border-radius: 50px; /* Forma de Píldora */
+    background: var(--cristal-card); border: var(--borde-vidrio);
+    box-shadow: var(--luz-fuera); backdrop-filter: blur(10px);
+    cursor: pointer; text-decoration: none; color: var(--suave); font-weight: 600; font-size: 15px;
 }
-.toque i { font-size: 1.3rem; margin-right: 15px; color: var(--suave); transition: 0.3s; }
-.toque:hover { color: var(--brillo); transform: translateY(-2px); }
-.toque:hover i { color: var(--brillo); }
+.toque i { font-size: 1.4rem; margin-right: 15px; background: var(--texto); -webkit-background-clip: text; -webkit-text-fill-color: transparent; transition: 0.3s; }
+.toque:hover { transform: translateY(-3px); color: var(--texto); box-shadow: 0 10px 20px rgba(0,0,0,0.05), var(--luz-fuera); }
 
-/* Botón Activo / Presionado */
+/* Estado Activo (Hundido + Gradiente) */
 .toque:active, .toque.activo {
-    box-shadow: var(--sombra); color: var(--brillo); background-color: transparent;
+    background: var(--cristal-input); box-shadow: var(--luz-dentro); color: var(--texto);
 }
-.toque.activo i { color: var(--brillo); }
+.toque.activo i { background: var(--gradiente-acento); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-/* Botón Fuerte (Guardar, Subir) */
+/* Botones de Acción Fuerte (Gradientes) */
 .fuerte {
-    display: block; width: 100%; padding: 15px; margin: 25px 0; border-radius: 20px;
-    background-color: var(--fondo-cristal); backdrop-filter: blur(10px); border: var(--borde-cristal);
-    box-shadow: var(--luz); cursor: pointer; font-size: 16px; font-weight: 600; color: var(--brillo);
+    display: block; width: 100%; padding: 16px; margin: 25px 0; border-radius: 50px;
+    background: var(--gradiente-acento); border: none;
+    box-shadow: 0 10px 20px rgba(108, 92, 231, 0.3), var(--luz-fuera);
+    cursor: pointer; font-size: 16px; font-weight: 700; color: #fff; letter-spacing: 1px;
 }
-.fuerte:active { box-shadow: var(--sombra); }
+.fuerte:hover { background: var(--gradiente-hover); transform: translateY(-2px); }
+.fuerte:active { transform: scale(0.98); box-shadow: var(--luz-dentro); }
 
-/* Botón Circular (.aro) */
+/* Botones Circulares */
 .aro {
     width: 50px; height: 50px; border-radius: 50%;
-    background-color: var(--fondo-cristal); backdrop-filter: blur(10px); border: var(--borde-cristal);
-    box-shadow: var(--luz); cursor: pointer; font-size: 20px; color: var(--brillo);
+    background: var(--cristal-card); border: var(--borde-vidrio); box-shadow: var(--luz-fuera);
+    cursor: pointer; font-size: 20px; color: var(--texto);
     display: flex; justify-content: center; align-items: center; flex-shrink: 0;
 }
-.aro:active { box-shadow: var(--sombra); }
+.aro:hover { color: var(--brillo); transform: translateY(-2px); }
+.aro:active { box-shadow: var(--luz-dentro); transform: scale(0.95); }
 
-/* Inputs (.hueco) */
+/* Inputs Estilo Cristal Hundido (Separaditos y bellos) */
 .hueco {
-    width: 100%; padding: 15px 20px; border: var(--borde-cristal); outline: none;
-    background-color: var(--fondo-cristal); border-radius: 15px;
-    box-shadow: var(--sombra); color: var(--texto); font-size: 14px; margin-top: 8px;
+    width: 100%; padding: 18px 25px; outline: none;
+    background: var(--cristal-input); border: var(--borde-input); border-radius: 50px; /* Píldora */
+    box-shadow: var(--luz-dentro); color: var(--texto); font-size: 15px; font-weight: 500;
+    transition: 0.3s; margin-bottom: 20px; /* Separaditos */
 }
-.hueco::placeholder { color: var(--suave); }
-
+.hueco::placeholder { color: var(--suave); font-weight: 400; }
+.hueco:focus { box-shadow: var(--luz-dentro), 0 0 0 2px var(--brillo); }
 
 /* =========================================
-   5. LISTAS Y TABLAS
-   ========================================= */
-#lista-tareas li, .item-file {
-    padding: 15px 20px; margin-bottom: 15px; border-radius: 15px;
-    background-color: var(--fondo-cristal); border: var(--borde-cristal);
-    box-shadow: var(--luz); display: flex; justify-content: space-between; align-items: center;
-}
-
-.marco { overflow-x: auto; }
-.tejido { width: 100%; border-collapse: collapse; margin-top: 15px; }
-.tejido th, .tejido td { padding: 15px; text-align: left; border-bottom: 2px solid var(--color-fondo); }
-.tejido th { color: var(--brillo); font-weight: 600; }
-.tejido tbody tr:hover { box-shadow: var(--luz); border-radius: 10px; background-color: var(--fondo-cristal); }
-
-
-/* =========================================
-   6. LOGIN ANIMADO (ADAPTADO AL NEUMORFISMO)
+   5. EL LOGIN MAESTRO (DISEÑO PERFECTO)
    ========================================= */
 #login-overlay {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: var(--color-fondo); z-index: 9999; display: flex; justify-content: center; align-items: center;
+    background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(20px);
+    z-index: 9999; display: flex; justify-content: center; align-items: center;
 }
+
 .container {
-    background-color: var(--fondo-cristal); backdrop-filter: blur(20px); border: var(--borde-cristal);
-    border-radius: 30px; box-shadow: var(--luz); position: relative; overflow: hidden; 
-    width: 900px; max-width: 90%; min-height: 550px; display: flex;
+    background: var(--cristal-card); backdrop-filter: blur(30px); border: var(--borde-vidrio);
+    border-radius: 40px; box-shadow: 0 30px 60px rgba(0,0,0,0.2), var(--luz-fuera);
+    position: relative; overflow: hidden; width: 950px; max-width: 95%; min-height: 600px; display: flex;
 }
+
 .form-container {
-    position: absolute; top: 0; height: 100%; transition: all 0.6s ease-in-out;
+    position: absolute; top: 0; height: 100%; transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
     left: 0; width: 50%; display: flex; align-items: center; justify-content: center; background: transparent;
 }
-.form-content { width: 100%; padding: 0 40px; text-align: center; }
+.form-content { width: 100%; padding: 0 50px; text-align: center; }
+.form-content h1 { font-size: 2.5rem; margin-bottom: 30px; }
+
+/* Contenedor de inputs del login para darles espacio y los íconos */
+.input-group { position: relative; width: 100%; margin-bottom: 25px; }
+.input-group .hueco { margin-bottom: 0; padding-left: 55px; }
+.input-group i { 
+    position: absolute; left: 22px; top: 50%; transform: translateY(-50%); 
+    color: var(--suave); font-size: 20px; 
+}
+
 .sign-in-container { z-index: 2; opacity: 1; }
 .sign-up-container { opacity: 0; z-index: 1; }
 .container.right-panel-active .sign-in-container { transform: translateX(100%); opacity: 0; z-index: 0; }
-.container.right-panel-active .sign-up-container { transform: translateX(100%); opacity: 1; z-index: 5; animation: show 0.6s; }
+.container.right-panel-active .sign-up-container { transform: translateX(100%); opacity: 1; z-index: 5; }
 
+/* Burbuja Animada */
 .overlay-container {
-    position: absolute; top: 0; left: 50%; width: 50%; height: 100%;
-    overflow: hidden; transition: transform 0.6s ease-in-out; z-index: 100;
+    position: absolute; top: 0; left: 50%; width: 50.5%; height: 100%;
+    overflow: hidden; transition: transform 0.6s ease-in-out, border-radius 0.6s ease; z-index: 100;
+    border-top-left-radius: 150px; border-bottom-left-radius: 150px;
 }
-.container.right-panel-active .overlay-container { transform: translateX(-100%); }
+.container.right-panel-active .overlay-container { 
+    transform: translateX(-100%); border-radius: 0; 
+    border-top-right-radius: 150px; border-bottom-right-radius: 150px; left: 50%;
+}
+
 .overlay {
-    background: var(--brillo); color: white; position: relative; left: -100%; height: 100%; width: 200%;
+    background: var(--gradiente-acento); color: white; position: relative; left: -100%; height: 100%; width: 200%;
     transform: translateX(0); transition: transform 0.6s ease-in-out; display: flex;
 }
 .container.right-panel-active .overlay { transform: translateX(50%); }
+
 .overlay-panel {
     position: absolute; display: flex; align-items: center; justify-content: center;
-    flex-direction: column; padding: 0 40px; text-align: center; top: 0; height: 100%; width: 50%;
+    flex-direction: column; padding: 0 50px; text-align: center; top: 0; height: 100%; width: 50%;
     transform: translateX(0); transition: transform 0.6s ease-in-out;
 }
 .overlay-left { transform: translateX(-20%); }
@@ -205,21 +240,44 @@ p { color: var(--suave); line-height: 1.6; margin-bottom: 15px; }
 .overlay-right { right: 0; transform: translateX(0); }
 .container.right-panel-active .overlay-right { transform: translateX(20%); }
 
+/* Textos Overlay */
+.overlay-panel h1 { background: none; color: white; -webkit-text-fill-color: white; }
+.overlay-panel p { color: rgba(255,255,255,0.9); font-size: 16px; margin: 20px 0 30px; }
+
+/* Botones Ghost */
+button.ghost {
+    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.8); color: white;
+    padding: 15px 50px; border-radius: 50px; font-weight: 700; text-transform: uppercase; 
+    cursor: pointer; backdrop-filter: blur(5px); letter-spacing: 1px;
+}
+button.ghost:hover { background: white; color: var(--brillo); }
 
 /* =========================================
-   7. RESPONSIVO
+   6. LISTAS, TABLAS Y WIDGETS
    ========================================= */
-@media (max-width: 768px) {
+#lista-tareas li, .item-file {
+    padding: 18px 25px; margin-bottom: 15px; border-radius: 20px;
+    background: var(--cristal-card); border: var(--borde-vidrio);
+    box-shadow: var(--luz-fuera); display: flex; justify-content: space-between; align-items: center;
+}
+
+/* Textarea Notes */
+#mi-bloc-notas {
+    border-radius: 25px; padding: 25px; height: 180px; resize: none;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
     .lienzo { flex-direction: column; }
-    .costado { width: 100%; height: auto; position: relative; top: 0; flex-direction: row; flex-wrap: wrap; }
-    .lazos { flex-direction: row; flex-wrap: wrap; justify-content: center; width: 100%; }
-    .toque { width: auto; padding: 12px 15px; margin-bottom: 5px; }
+    .costado { width: 100%; height: auto; position: relative; top: 0; flex-direction: row; flex-wrap: wrap; border-radius: 20px; padding: 20px; }
+    .lazos { flex-direction: row; flex-wrap: wrap; justify-content: center; width: 100%; gap: 10px; }
+    .toque { width: auto; padding: 12px 20px; }
     
     .overlay-container { display: none; }
-    .container { width: 100%; min-height: 100vh; border-radius: 0; box-shadow: none;}
+    .container { width: 100%; min-height: 100vh; border-radius: 0; }
     .form-container { width: 100%; }
     .sign-in-container { display: flex; }
     .sign-up-container { display: none; }
     .container.right-panel-active .sign-in-container { display: none; }
-    .container.right-panel-active .sign-up-container { display: flex; opacity: 1; animation: show 0.5s; }
+    .container.right-panel-active .sign-up-container { display: flex; opacity: 1; animation: fadeIn 0.5s; }
 }
